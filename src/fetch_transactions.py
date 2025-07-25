@@ -1,3 +1,5 @@
+# src/fetch_transactions.py
+
 import requests
 import pandas as pd
 from tqdm import tqdm
@@ -28,8 +30,6 @@ def fetch_all_wallets(wallet_list_path, output_path):
     Fetch transactions for all wallets listed in the CSV file.
     Saves consolidated data as a CSV for feature engineering.
     """
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-
     wallets_df = pd.read_csv(wallet_list_path)
     all_data = []
 
@@ -39,7 +39,7 @@ def fetch_all_wallets(wallet_list_path, output_path):
         for tx in transactions:
             tx['wallet_id'] = wallet
             all_data.append(tx)
-        time.sleep(0.2)  # to respect API rate limits
+        time.sleep(0.2)  # respect API rate limits
 
     df = pd.json_normalize(all_data)
     df.to_csv(output_path, index=False)

@@ -1,19 +1,21 @@
-import pandas as pd
-from sklearn.preprocessing import MinMaxScaler
-
-def generate_scores(df):
+def calculate_wallet_score(row):
     """
-    Generate risk scores for wallets based on engineered features.
+    Calculate risk score for a wallet based on features.
+    The score is normalized to be between 0 and 1000.
     """
-    scaler = MinMaxScaler(feature_range=(0, 1000))
-    score_cols = ['total_txn_count', 'total_value', 'avg_txn_value', 'max_txn_value', 'unique_to_addresses']
-    df[score_cols] = scaler.fit_transform(df[score_cols])
-    df['score'] = df[score_cols].mean(axis=1) * 1000
-    df['score'] = df['score'].round(0)
-    return df[['wallet_id', 'score']]
+    score = 0
 
-if __name__ == "__main__":
-    df = pd.read_csv("outputs/features.csv")
-    scores_df = generate_scores(df)
-    scores_df.to_csv("outputs/wallet_scores.csv", index=False)
-    print("✅ Wallet scores saved to outputs/wallet_scores.csv")
+    # Example heuristic scaled proportionally:
+    if row['num_transactions'] > 10:
+        score += 200
+    if row['total_value_eth'] > 1:
+        score += 300
+    if row['avg_gas_price'] > 50e9:  # 50 Gwei
+        score += 200
+    if row['max_value_eth'] > 0.5:
+        score += 200
+    if row['min_value_eth'] < 0.01:
+        score += 100
+
+    # Clip between 0 and 1000
+    return max(0, min(score, 1000))

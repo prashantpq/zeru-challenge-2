@@ -1,5 +1,7 @@
 pandas
 requests
 tqdm
-scikit-learn
 python-dotenv
+scikit-learn
+matplotlib
+seaborn
