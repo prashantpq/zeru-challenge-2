@@ -84,7 +84,7 @@ score = (
 
 ---
 
-## 📂 Output
+## Output
 
 After execution, a new file is saved: wallet_features.csv to output
 
@@ -101,7 +101,7 @@ After execution, a new file is saved: wallet_features.csv to output
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```bash
 
