@@ -1,5 +1,5 @@
-pandas
 requests
+pandas
 tqdm
 python-dotenv
 scikit-learn

@@ -1,5 +1,3 @@
-# src/fetch_transactions.py
-
 import requests
 import pandas as pd
 from tqdm import tqdm
@@ -10,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 API_KEY = os.getenv('API_KEY')
-CHAIN_ID = "1"  # Ethereum Mainnet
+CHAIN_ID = "1"  
 
 def fetch_wallet_transactions(wallet_address):
     """
@@ -39,7 +37,7 @@ def fetch_all_wallets(wallet_list_path, output_path):
         for tx in transactions:
             tx['wallet_id'] = wallet
             all_data.append(tx)
-        time.sleep(0.2)  # respect API rate limits
+        time.sleep(0.2)  
 
     df = pd.json_normalize(all_data)
     df.to_csv(output_path, index=False)
