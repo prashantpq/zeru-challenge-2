@@ -55,6 +55,6 @@ if __name__ == "__main__":
     features_df = engineer_features(df)
 
     # Save features with risk score
-    features_df.to_csv("outputs/wallet_features.csv", index=False)
+    features_df.to_csv("output/wallet_features.csv", index=False)
 
     print("Feature engineering complete. Output saved to outputs/wallet_features.csv")
