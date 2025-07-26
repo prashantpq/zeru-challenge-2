@@ -16,7 +16,7 @@ Our goal:
 
 ### 1. **Fetch Transaction History**
 - Retrieved transaction data using wallet addresses.
-- Used external APIs like Covalent or custom scrapers to fetch historical on-chain transactions.
+- Used external APIs Covalent to fetch historical on-chain transactions.
 
 ### 2. **Data Preparation**
 - Cleaned, deduplicated, and standardized transaction records.
@@ -86,7 +86,7 @@ score = (
 
 ## 📂 Output
 
-After execution, a new file is saved: wallet_features.csv
+After execution, a new file is saved: wallet_features.csv to output
 
 ---
 
