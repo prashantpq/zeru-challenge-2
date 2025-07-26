@@ -5,10 +5,10 @@
 This project was developed as part of a technical assignment focused on **on-chain risk profiling** using data from DeFi lending protocols like **Compound V2/V3** or **Aave V2**.
 
 Our goal:  
- To retrieve on-chain transaction data for a set of wallets  
- Engineer meaningful features  
- Assign a **risk score between 0 and 1000** to each wallet  
- Make the approach explainable, reproducible, and scalable
+ - To retrieve on-chain transaction data for a set of wallets  
+ - Engineer meaningful features  
+ - Assign a **risk score between 0 and 1000** to each wallet  
+ - Make the approach explainable, reproducible, and scalable
 
 ---
 
