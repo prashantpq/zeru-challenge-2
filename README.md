@@ -1,62 +1,78 @@
-# Wallet Risk Scoring From Scratch
+# 🧠 Ethereum Wallet Risk Scoring System
 
-## Overview
+## 📌 Overview
 
-This project was developed as part of a technical assignment focused on **on-chain risk profiling** using data from DeFi lending protocols like **Compound V2/V3** or **Aave V2**.
-
-Our goal:  
- - To retrieve on-chain transaction data for a set of wallets  
- - Engineer meaningful features  
- - Assign a **risk score between 0 and 1000** to each wallet  
- - Make the approach explainable, reproducible, and scalable
+This project implements a **feature engineering pipeline** to compute a **risk score** for Ethereum wallets based on their transaction history. The goal is to **quantitatively assess** the risk associated with each wallet, using interpretable on-chain features such as transaction count, value transacted, and gas price behavior.
 
 ---
 
-## Assignment Requirements
+## 🚨 Problem Statement
 
-### 1. **Fetch Transaction History**
-- Retrieved transaction data using wallet addresses.
-- Used external APIs like Covalent or custom scrapers to fetch historical on-chain transactions.
+In blockchain ecosystems, particularly Ethereum, it's crucial to assess the **risk profile** of a wallet before interacting with it — especially in the context of:
 
-### 2. **Data Preparation**
-- Cleaned, deduplicated, and standardized transaction records.
-- Extracted wallet-specific summaries:
-  - Total transaction count
-  - Total amount transacted
-  - Average transaction value
-  - Gas fee consumption
-  - Interaction types (e.g., deposits, borrows, swaps)
+- Anti-money laundering (AML)
+- Fraud detection
+- Compliance analysis
+- Whitelisting/blacklisting
 
-### 3. **Risk Scoring**
-- Developed a scoring model that outputs a risk score ∈ [0, 1000].
-- Risk score reflects the probability of unusual or suspicious activity based on wallet behavior.
+However, manual analysis is impractical due to:
+- Large volumes of data
+- Complex behavioral patterns
+
+**Hence**, this project develops a data-driven risk scoring mechanism to assist in automated risk profiling of Ethereum wallets.
 
 ---
 
-## ⚙️ Features Considered
+## ⚙️ Features Engineered
 
-| Feature Name              | Description                                           | Risk Signal            |
-|---------------------------|-------------------------------------------------------|-------------------------|
-| `transaction_count`       | Total number of transactions                         | ↑ Higher = riskier      |
-| `total_transacted_value`  | Total ETH or token volume moved                      | ↑ Higher = riskier      |
-| `average_txn_value`       | Mean transaction size                                | ↓ Lower = riskier       |
-| `gas_fees_spent`          | Total gas paid in Gwei                               | Neutral/signal activity |
-| `night_activity_ratio`    | Ratio of txns between 12am–6am UTC                   | ↑ Higher = suspicious   |
-| `country_risk_factor`     | Country mapped from IP/geo/metadata (if available)   | ↑ High-risk = riskier   |
-| `protocols_interacted`    | Number of DeFi protocols interacted with             | ↓ Diverse = less risky  |
+The pipeline groups transaction data by `wallet_id` and calculates the following:
 
-All features were **normalized using MinMax scaling**, and final scores were **weighted and summed** to produce a single value per wallet.
+| Feature                | Description                                |
+|------------------------|--------------------------------------------|
+| `num_transactions`     | Total number of transactions               |
+| `total_value_eth`      | Total transaction value (in ETH)           |
+| `avg_gas_price`        | Average gas price used                     |
+| `max_gas_price`        | Maximum gas price used                     |
+
+These features are then scaled and weighted to generate the final `risk_score`.
 
 ---
 
-## Scoring Method
+## 🧮 Risk Score Calculation Logic
 
-```python
-score = (
-    w1 * normalized_txn_count +
-    w2 * normalized_value +
-    w3 * (1 - normalized_avg_txn_value) +
-    w4 * normalized_gas +
-    w5 * night_activity +
-    ...
-) * 1000
+1. **Normalization**:  
+   All features are scaled using **MinMaxScaler** to bring them to a common [0,1] range.
+
+2. **Weight Assignment**:  
+   Features contribute to the score using the following weights:
+
+   - 🧾 `num_transactions` → 40%
+   - 💸 `total_value_eth` → 30%
+   - ⛽ `avg_gas_price` → 20%
+   - 🚀 `max_gas_price` → 10%
+
+3. **Final Score**:  
+   \[
+   \text{Risk Score} = (F_1 \times 0.4 + F_2 \times 0.3 + F_3 \times 0.2 + F_4 \times 0.1) \times 1000
+   \]
+
+4. **Range**:  
+   The final score is clipped between **0 and 1000** for interpretability.
+
+---
+
+## 🧠 Interpretation
+
+| Risk Score Range | Risk Level | Description                                                                 |
+|------------------|------------|-----------------------------------------------------------------------------|
+| 0 - 300          | Low        | Very limited or dormant wallet activity. Safe to interact.                 |
+| 301 - 600        | Medium     | Average transaction activity. Proceed with standard caution.               |
+| 601 - 800        | High       | Aggressive transaction behavior or large values. Review before trusting.   |
+| 801 - 1000       | Critical   | Suspiciously high activity, gas usage. Potentially risky or malicious.     |
+
+---
+
+## 📂 Output
+
+After execution, a new file is saved: wallet_features.csv
+
